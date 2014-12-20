@@ -483,10 +483,10 @@ def p_empty(p):
 
 
 def p_error(p):
-    if p:
-        print("Syntax error at '%s'" % p.value)
-    else:
+    if not p:
         print("Syntax error at EOF")
+    print("Syntax error at '{0}', line {1}, col {2}".format(
+        p.value, p.lineno, p.lexpos + 1))
 
 
 def get_lexer():
