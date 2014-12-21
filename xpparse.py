@@ -3,6 +3,10 @@
 from __future__ import print_function, absolute_import
 
 import re
+from functools import partial
+
+import ply.lex as lex
+import ply.yacc as yacc
 
 # Known basic tag identifiers
 basic_tag_ids = {'XProtocol': 'XPROTOCOL',
@@ -39,7 +43,6 @@ typed_tag_ids = {'ParamBool': 'PARAMBOOL',
 
 tokens = [
     'TAG',
-    'TYPED_TAG',
     'WHITESPACE',
     'INTEGER',
     'FLOAT',
@@ -107,7 +110,8 @@ def t_MULTI_STRING(t):
 
 
 def t_error(t):
-    print("%d: Illegal character '%s'" % (t.lexer.lineno, t.value[0]))
+    print("Illegal character '{0}' at line {1} col {2}".format(
+          t.value[0], t.lexer.lineno, t.lexer.lexpos))
     t.type = t.value[0]
     t.value = t.value[0]
     t.lexer.skip(1)
@@ -486,18 +490,7 @@ def p_error(p):
     if not p:
         print("Syntax error at EOF")
     print("Syntax error at '{0}', line {1}, col {2}".format(
-        p.value, p.lineno, p.lexpos + 1))
-
-
-def get_lexer():
-    import ply.lex as lex
-    return lex.lex()
-
-
-def get_parser(start=None):
-    import ply.yacc as yacc
-    get_lexer()
-    return yacc.yacc(start=start)
+        p.value, p.lineno, p.lexpos))
 
 
 DBL_QUOTE_RE = re.compile(r'(?<!")""(?!")')
@@ -518,3 +511,22 @@ def split_ascconv(in_str):
     """ Split input string into xprotocol and ASCCONV
     """
     return ASCCONV_BLOCK.match(in_str).groups()
+
+
+def get_parse(*args, **kwargs):
+    """ Return function to parse string with arguments for ``yacc.yacc``
+    """
+    lexer = lex.lex()
+    parser = yacc.yacc(*args, **kwargs)
+    return partial(parser.parse, lexer=lexer)
+
+
+lexer = lex.lex()
+parser = yacc.yacc(debug=False)
+
+
+def parse(in_str):
+    """ Parse `in_str` with XProtocol parser
+    """
+    lexer.lineno = 1
+    return parser.parse(in_str, lexer=lexer)

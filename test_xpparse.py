@@ -12,7 +12,6 @@ from nose.tools import (assert_true, assert_false, assert_equal,
 DATA_PATH = dirname(__file__)
 EG_PROTO = pjoin(DATA_PATH, 'xprotocol_sample.txt')
 
-LEXER = xpp.get_lexer()
 
 def to_comparable(parse_results, expected):
     if hasattr(expected, 'keys'):
@@ -30,13 +29,14 @@ def to_comparable(parse_results, expected):
 
 
 def assert_tokens(source, expected):
-    LEXER.input(source)
-    assert_equal([t.value for t in LEXER], expected)
+    xpp.lexer.input(source)
+    xpp.lexer.lineno = 1
+    assert_equal([t.value for t in xpp.lexer], expected)
 
 
 def assert_parsed(source, start, expected):
-    parser = xpp.get_parser(start)
-    assert_equal(parser.parse(source), expected)
+    parse = xpp.get_parse(start=start)
+    assert_equal(parse(source), expected)
 
 
 def test_strings_newlines():
@@ -511,8 +511,7 @@ def test_functor():
 
 def test_pipe_service():
     # Smoke test to see if we can parse a pipe service
-    parser = xpp.get_parser('pipe_service')
-    res = parser.parse(
+    res = xpp.get_parse(start='pipe_service')(
         """
     <PipeService."EVA">
     {
@@ -583,7 +582,7 @@ def test_pipe_service():
       <ParamFunctor."DtiIcePostProcMosaicDecorator"> 
       {
         <Class> "DtiIcePostProcMosaicDecorator@DtiIcePostProc" 
-        
+
         <ParamBool."EXECUTE">  { "true"  }
         <ParamBool."Mosaic">  { "true"  }
         <ParamBool."MosaicDiffusionMaps">  { }
@@ -645,8 +644,7 @@ def test_depends():
 
 def test_xprotocol():
     # Smoke test to see if we can parse an xprotocol
-    parser = xpp.get_parser('xprotocol')
-    res = parser.parse("""
+    res = xpp.get_parse(start='xprotocol')("""
 <XProtocol>
 {
   <Name> "PhoenixMetaProtocol"
@@ -690,8 +688,7 @@ def test_xprotocol():
 def test_sample_file():
     with open(EG_PROTO, 'rt') as fobj:
         contents = fobj.read()
-    parser = xpp.get_parser()
-    res = parser.parse(contents)
+    res = xpp.parse(contents)
     assert_equal(len(res), 1)
     protocol = res[0]
     assert_equal(len(protocol['depends']), 0)
@@ -700,5 +697,5 @@ def test_sample_file():
         if v['name'].startswith('Protocol'):
             break
     proto_str = xpp.split_ascconv(xpp.strip_twin_quote(v['value']))[0]
-    res2 = parser.parse(proto_str)
+    res2 = xpp.parse(proto_str)
     assert_equal(len(res2), 2)
