@@ -715,12 +715,13 @@ def test_sample_file():
         contents = fobj.read()
     res = xpp.parse(contents)
     assert_equal(len(res), 1)
+    # Get the embedded protocol string from the protocol contents
     protocol = res[0]
     assert_equal(len(protocol['depends']), 0)
     assert_equal(len(protocol['blocks']), 1)
     for v in protocol['blocks'][0]['value']:
         if v['name'].startswith('Protocol'):
             break
-    proto_str = xpp.split_ascconv(xpp.strip_twin_quote(v['value']))[0]
+    proto_str, asc_hdr = xpp.split_ascconv(xpp.strip_twin_quote(v['value']))
     res2 = xpp.parse(proto_str)
     assert_equal(len(res2), 2)

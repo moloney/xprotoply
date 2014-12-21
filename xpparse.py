@@ -39,7 +39,6 @@ typed_tag_ids = {'ParamBool': 'PARAMBOOL',
                  'Method': 'METHOD',
                 }
 
-
 tokens = [
     'TAG',
     'WHITESPACE',
@@ -539,14 +538,14 @@ def strip_twin_quote(in_str):
     return DBL_QUOTE_RE.sub('"', in_str)
 
 
-ASCCONV_BLOCK = re.compile(
+ASCCONV_RE = re.compile(
     r'(.*)?### ASCCONV BEGIN ###$(.*?)^### ASCCONV END ###',
     flags=re.M | re.S)
 
 def split_ascconv(in_str):
     """ Split input string into xprotocol and ASCCONV
     """
-    return ASCCONV_BLOCK.match(in_str).groups()
+    return ASCCONV_RE.match(in_str).groups()
 
 
 lexer = lex.lex()
