@@ -627,9 +627,9 @@ def test_xp_hdr():
                   <ID> 1000002
                   <Userversion> 2.0""",
                   'xp_hdr',
-                  dict(Name="PhoenixMetaProtocol",
-                       ID=1000002,
-                       Userversion=2.0))
+                  dict(name="PhoenixMetaProtocol",
+                       id=1000002,
+                       user_version=2.0))
 
 
 def test_depends():
@@ -678,9 +678,9 @@ def test_xprotocol():
 }""")
     assert_equal(res,
                  dict(type='xprotocol',
-                      Name="PhoenixMetaProtocol",
-                      ID=1000002,
-                      Userversion=2.0,
+                      name="PhoenixMetaProtocol",
+                      id=1000002,
+                      user_version=2.0,
                       blocks=[dict(type='param_map',
                                   name='',
                                   value=[dict(type='param_bool',

@@ -168,17 +168,30 @@ def p_xp_hdr(p):
 
 
 def p_xp_hdr_key(p):
-    """ xp_hdr_key : NAME MULTI_STRING
-                   | ID INTEGER
-                   | USERVERSION FLOAT
-    """
-    p[0] = (p[1], p[2])
-
-
-def p_xp_hdr_key_eva(p):
-    """ xp_hdr_key : eva_string_table
+    """ xp_hdr_key : name
+                   | id
+                   | user_version
+                   | eva_string_table
     """
     p[0] = p[1]
+
+
+def p_name(p):
+    """ name : NAME MULTI_STRING
+    """
+    p[0] = ('name', p[2])
+
+
+def p_id(p):
+    """ id : ID INTEGER
+    """
+    p[0] = ('id', p[2])
+
+
+def p_user_version(p):
+    """ user_version : USERVERSION FLOAT
+    """
+    p[0] = ('user_version', p[2])
 
 
 def p_depends(p):
