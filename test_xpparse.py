@@ -3,6 +3,9 @@
 
 from os.path import join as pjoin, dirname
 
+import ply.lex as lex
+import ply.yacc as yacc
+
 import xpparse as xpp
 
 from nose.tools import (assert_true, assert_false, assert_equal,
@@ -11,6 +14,7 @@ from nose.tools import (assert_true, assert_false, assert_equal,
 
 DATA_PATH = dirname(__file__)
 EG_PROTO = pjoin(DATA_PATH, 'xprotocol_sample.txt')
+DEBUG = True
 
 
 def test_find_column():
@@ -45,9 +49,19 @@ def assert_tokens(source, expected):
     assert_equal([t.value for t in xpp.lexer], expected)
 
 
+def parse_with_start(start, source):
+    lexer = lex.lex(module=xpp)
+    # Don't read or write cached module tables to avoid start symbol confusion
+    parser = yacc.yacc(start=start,
+                       module=xpp,
+                       debug=DEBUG,
+                       tabmodule=None,
+                       write_tables=False)
+    return parser.parse(source, lexer=lexer)
+
+
 def assert_parsed(source, start, expected):
-    parse = xpp.get_parse(start=start)
-    assert_equal(parse(source), expected)
+    assert_equal(parse_with_start(start, source), expected)
 
 
 def test_strings_newlines():
@@ -522,7 +536,7 @@ def test_functor():
 
 def test_pipe_service():
     # Smoke test to see if we can parse a pipe service
-    res = xpp.get_parse(start='pipe_service')(
+    res = parse_with_start('pipe_service',
         """
     <PipeService."EVA">
     {
@@ -655,7 +669,7 @@ def test_depends():
 
 def test_xprotocol():
     # Smoke test to see if we can parse an xprotocol
-    res = xpp.get_parse(start='xprotocol')("""
+    res = parse_with_start('xprotocol', """
 <XProtocol>
 {
   <Name> "PhoenixMetaProtocol"

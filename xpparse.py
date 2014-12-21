@@ -3,7 +3,6 @@
 from __future__ import print_function, absolute_import
 
 import re
-from functools import partial
 
 import ply.lex as lex
 import ply.yacc as yacc
@@ -548,14 +547,6 @@ def split_ascconv(in_str):
     """ Split input string into xprotocol and ASCCONV
     """
     return ASCCONV_BLOCK.match(in_str).groups()
-
-
-def get_parse(*args, **kwargs):
-    """ Return function to parse string with arguments for ``yacc.yacc``
-    """
-    lexer = lex.lex()
-    parser = yacc.yacc(*args, **kwargs)
-    return partial(parser.parse, lexer=lexer)
 
 
 lexer = lex.lex()
