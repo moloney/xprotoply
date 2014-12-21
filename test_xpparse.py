@@ -13,6 +13,17 @@ DATA_PATH = dirname(__file__)
 EG_PROTO = pjoin(DATA_PATH, 'xprotocol_sample.txt')
 
 
+def test_find_column():
+    # Test find_column utility
+    in_str = '012\n456\n89'
+    assert_equal(xpp.find_column(in_str, 2), 2)
+    assert_equal(xpp.find_column(in_str, 3), 3)
+    assert_equal(xpp.find_column(in_str, 4), 0)
+    assert_equal(xpp.find_column(in_str, 5), 1)
+    assert_equal(xpp.find_column(in_str, 8), 0)
+    assert_equal(xpp.find_column(in_str, 9), 1)
+
+
 def to_comparable(parse_results, expected):
     if hasattr(expected, 'keys'):
         out = {}

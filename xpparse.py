@@ -109,9 +109,30 @@ def t_MULTI_STRING(t):
     return t
 
 
+def find_column(input, lexpos):
+    """ Get line column number given input string `input` and lex pos `lexpos`
+
+    Parameters
+    ----------
+    input : str
+        The input text string.
+    lexpos : int
+        The position in the character stream
+
+    Returns
+    -------
+    column : int
+        Index to the character in the input line
+    """
+    last_cr = input.rfind('\n', 0, lexpos) # -1 if not found
+    return lexpos - last_cr - 1
+
+
 def t_error(t):
     print("Illegal character '{0}' at line {1} col {2}".format(
-          t.value[0], t.lexer.lineno, t.lexer.lexpos))
+        t.value[0],
+        t.lexer.lineno,
+        find_column(t.lexer.lexdata, t.lexpos) + 1))
     t.type = t.value[0]
     t.value = t.value[0]
     t.lexer.skip(1)
@@ -489,8 +510,11 @@ def p_empty(p):
 def p_error(p):
     if not p:
         print("Syntax error at EOF")
+        return
+    in_data = p.lexer.lexdata
     print("Syntax error at '{0}', line {1}, col {2}".format(
-        p.value, p.lineno, p.lexpos))
+        p.value, p.lineno, find_column(in_data, p.lexpos) + 1))
+    print("Line is: '{0}'".format(in_data.splitlines()[p.lineno-1]))
 
 
 DBL_QUOTE_RE = re.compile(r'(?<!")""(?!")')
