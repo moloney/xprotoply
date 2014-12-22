@@ -169,6 +169,41 @@ def test_param_card():
                   lines=[[126, 48, 126, 140], [276, 48, 276, 140]]))
 
 
+def test_eva_card_layout():
+    source = """
+    <EVACardLayout."Inline Compose">
+    {
+    "LAYOUT_10X2_WIDE_CONTROLS"
+    4
+    "MultiStep.IsInlineCompose" 110 48 "UI_CHECKBOX"
+    "MultiStep.ComposingFunction" 77 63 "UI_STD"
+    "MultiStep.ComposingGroup" 77 78 "UI_STD"
+    "MultiStep.IsLastStep" 110 93 "UI_CHECKBOX"
+    <Line>  { 126 48 126 140 }
+    <Line>  { 276 48 276 140 }
+    }"""
+    expected = dict(type='eva_card_layout',
+                    name='Inline Compose',
+                    repr="LAYOUT_10X2_WIDE_CONTROLS",
+                    n_controls=4,
+                    controls=[
+                        dict(param="MultiStep.IsInlineCompose",
+                             pos=[110, 48],
+                             repr="UI_CHECKBOX"),
+                        dict(param="MultiStep.ComposingFunction",
+                             pos=[77, 63],
+                             repr='UI_STD'),
+                        dict(param="MultiStep.ComposingGroup",
+                             pos=[77, 78],
+                             repr='UI_STD'),
+                        dict(param="MultiStep.IsLastStep",
+                             pos=[110, 93],
+                             repr="UI_CHECKBOX")],
+                    lines=[[126, 48, 126, 140], [276, 48, 276, 140]])
+    assert_parsed(source, 'eva_card_layout', expected)
+    assert_parsed(source, 'eva_cards', [expected])
+
+
 def test_context_and_so_on():
     assert_parsed('<Context> "ONLINE"', 'context', 'ONLINE')
     assert_parsed('<Dll> "MrMultiStepDependencies"',

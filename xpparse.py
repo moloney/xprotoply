@@ -54,6 +54,7 @@ class XProtocolSymbols(object):
                      'ParamFunctor': 'PARAMFUNCTOR',
                      'ParamCardLayout': 'PARAMCARDLAYOUT',
                      'PipeService': 'PIPESERVICE',
+                     'EVACardLayout': 'EVACARDLAYOUT',
                      'Connection': 'CONNECTION',
                      'Dependency': 'DEPENDENCY',
                      'Event': 'EVENT',
@@ -156,7 +157,8 @@ class XProtocolSymbols(object):
         p[0] = [p[1]] if len(p) == 2 else p[1] + [p[2]]
 
     def p_xprotocol(self, p):
-        """ xprotocol : XPROTOCOL '{' xp_hdr block_list cards depends '}'
+        """ xprotocol : XPROTOCOL '{' xp_hdr block_list param_cards depends '}'
+                      | XPROTOCOL '{' xp_hdr block_list eva_cards depends '}'
         """
         p[0] = dict(type='xprotocol',
                     blocks=p[4],
@@ -210,9 +212,12 @@ class XProtocolSymbols(object):
             p[0] = p[1] + [p[2]]
 
     def p_cards(self, p):
-        """ cards : cards param_card_layout
-                  | param_card_layout
-                  |
+        """ param_cards : param_cards param_card_layout
+                        | param_card_layout
+                        |
+            eva_cards   : eva_cards eva_card_layout
+                        | eva_card_layout
+                        |
         """
         if len(p) == 1:
             p[0] = []
@@ -423,9 +428,26 @@ class XProtocolSymbols(object):
                     controls=p[4],
                     lines=p[5])
 
+    def p_eva_card_layout(self, p):
+        """ eva_card_layout : EVACARDLAYOUT '{' MULTI_STRING INTEGER eva_controls lines '}'
+        """
+        # This appears to be the predecessor of ParamCardLayout
+        p[0] = dict(type='eva_card_layout',
+                    name=p[1],
+                    repr=p[3],
+                    n_controls=p[4],
+                    controls=p[5],
+                    lines=p[6])
+
     def p_controls(self, p):
         """ controls : controls control
                      | control
+        """
+        p[0] = [p[1]] if len(p) == 2 else p[1] + [p[2]]
+
+    def p_eva_controls(self, p):
+        """ eva_controls : eva_controls eva_control
+                         | eva_control
         """
         p[0] = [p[1]] if len(p) == 2 else p[1] + [p[2]]
 
@@ -442,6 +464,13 @@ class XProtocolSymbols(object):
         p[0] = dict(param=p[3],
                     pos=p[4],
                     repr=p[5])
+
+    def p_eva_control(self, p):
+        """ eva_control : MULTI_STRING INTEGER INTEGER MULTI_STRING
+        """
+        p[0] = dict(param=p[1],
+                    pos=[p[2], p[3]],
+                    repr=p[4])
 
     def p_eva_string_table(self, p):
         """ eva_string_table : EVASTRINGTABLE '{' INTEGER int_strings '}'
