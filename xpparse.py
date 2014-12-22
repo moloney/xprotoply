@@ -23,42 +23,40 @@ def find_column(input, lexpos):
     column : int
         Index to the character in the input line
     """
-    last_cr = input.rfind('\n', 0, lexpos) # -1 if not found
+    last_cr = input.rfind('\n', 0, lexpos)  # -1 if not found
     return lexpos - last_cr - 1
 
 
 class XProtocolSymbols(object):
     # Known basic tag identifiers
     basic_tag_ids = {'XProtocol': 'XPROTOCOL',
-                    'Class': 'CLASS',
-                    'Dll': 'DLL',
-                    'Control': 'CONTROL',
-                    'Param': 'PARAM',
-                    'Pos': 'POS',
-                    'Repr': 'REPR',
-                    'Line': 'LINE',
-                    'Context': 'CONTEXT',
-                    'EVAStringTable': 'EVASTRINGTABLE',
-                    'Name': 'NAME',
-                    'ID': 'ID',
-                    'Userversion': 'USERVERSION',
-                    }
+                     'Class': 'CLASS',
+                     'Dll': 'DLL',
+                     'Control': 'CONTROL',
+                     'Param': 'PARAM',
+                     'Pos': 'POS',
+                     'Repr': 'REPR',
+                     'Line': 'LINE',
+                     'Context': 'CONTEXT',
+                     'EVAStringTable': 'EVASTRINGTABLE',
+                     'Name': 'NAME',
+                     'ID': 'ID',
+                     'Userversion': 'USERVERSION'}
 
     # Known tag identifiers with defined types
     typed_tag_ids = {'ParamBool': 'PARAMBOOL',
-                    'ParamLong': 'PARAMLONG',
-                    'ParamString': 'PARAMSTRING',
-                    'ParamArray': 'PARAMARRAY',
-                    'ParamMap': 'PARAMMAP',
-                    'ParamChoice': 'PARAMCHOICE',
-                    'ParamFunctor': 'PARAMFUNCTOR',
-                    'ParamCardLayout': 'PARAMCARDLAYOUT',
-                    'PipeService': 'PIPESERVICE',
-                    'Connection': 'CONNECTION',
-                    'Dependency': 'DEPENDENCY',
-                    'Event': 'EVENT',
-                    'Method': 'METHOD',
-                    }
+                     'ParamLong': 'PARAMLONG',
+                     'ParamString': 'PARAMSTRING',
+                     'ParamArray': 'PARAMARRAY',
+                     'ParamMap': 'PARAMMAP',
+                     'ParamChoice': 'PARAMCHOICE',
+                     'ParamFunctor': 'PARAMFUNCTOR',
+                     'ParamCardLayout': 'PARAMCARDLAYOUT',
+                     'PipeService': 'PIPESERVICE',
+                     'Connection': 'CONNECTION',
+                     'Dependency': 'DEPENDENCY',
+                     'Event': 'EVENT',
+                     'Method': 'METHOD'}
 
     tokens = [
         'TAG',
@@ -345,9 +343,9 @@ class XProtocolSymbols(object):
                       | key_value
                       |
         """
-        if len(p) == 1: # empty
+        if len(p) == 1:  # empty
             p[0] = []
-        elif len(p) == 2: # tagged params or key_value
+        elif len(p) == 2:  # tagged params or key_value
             p[0] = [p[1]]
         else:
             p[0] = p[1] + [p[2]]
@@ -509,6 +507,7 @@ class XProtocolSymbols(object):
 
 DBL_QUOTE_RE = re.compile(r'(?<!")""(?!")')
 
+
 def strip_twin_quote(in_str):
     """ Replaces two double quotes together with one double quote
 
@@ -520,6 +519,7 @@ def strip_twin_quote(in_str):
 ASCCONV_RE = re.compile(
     r'(.*)?### ASCCONV BEGIN ###$(.*?)^### ASCCONV END ###',
     flags=re.M | re.S)
+
 
 def split_ascconv(in_str):
     """ Split input string into xprotocol and ASCCONV
