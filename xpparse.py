@@ -60,6 +60,7 @@ class XProtocolSymbols(object):
 
     tokens = [
         'TAG',
+        'TYPED_TAG',
         'WHITESPACE',
         'INTEGER',
         'FLOAT',
@@ -97,7 +98,7 @@ class XProtocolSymbols(object):
         r'<(?P<tagtype>[A-Za-z_][\w_]*)\."(?P<tagname>.*?)">'
         match = t.lexer.lexmatch
         t.value = match.group('tagname')
-        t.type = self.typed_tag_ids.get(match.group('tagtype'))
+        t.type = self.typed_tag_ids.get(match.group('tagtype'), 'TYPED_TAG')
         return t
 
     # Whitespace
