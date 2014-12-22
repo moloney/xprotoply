@@ -226,8 +226,6 @@ class XProtocolSymbols(object):
                 'value': p[4]}
         for param in p[5]:
             key = param['type']
-            if key in p[0]:
-                raise SyntaxError
             p[0][key] = param
 
     def p_param_emc(self, p):

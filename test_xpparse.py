@@ -712,6 +712,13 @@ def test_xprotocol():
                       depends=[]))
 
 
+def test_errors():
+    # Characters outside known tokens appear as character tokens
+    source = '<tag> 10 q "strung"'
+    assert_tokens(source, ['tag', 10, 'q', 'strung'])
+    assert_parsed(source, 'key_value', None)
+
+
 def test_sample_file():
     with open(EG_PROTO, 'rt') as fobj:
         contents = fobj.read()
