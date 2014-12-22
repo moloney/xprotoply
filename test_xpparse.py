@@ -16,6 +16,8 @@ DATA_PATH = dirname(__file__)
 EG_PROTO = pjoin(DATA_PATH, 'xprotocol_sample.txt')
 DEBUG = True
 
+SYMBOLS = xpp.XProtocolSymbols()
+
 
 def test_find_column():
     # Test find_column utility
@@ -44,16 +46,16 @@ def to_comparable(parse_results, expected):
 
 
 def assert_tokens(source, expected):
-    xpp.lexer.input(source)
-    xpp.lexer.lineno = 1
-    assert_equal([t.value for t in xpp.lexer], expected)
+    SYMBOLS.lexer.input(source)
+    SYMBOLS.lexer.lineno = 1
+    assert_equal([t.value for t in SYMBOLS.lexer], expected)
 
 
 def parse_with_start(start, source):
-    lexer = lex.lex(module=xpp)
+    lexer = lex.lex(module=SYMBOLS)
     # Don't read or write cached module tables to avoid start symbol confusion
     parser = yacc.yacc(start=start,
-                       module=xpp,
+                       module=SYMBOLS,
                        debug=DEBUG,
                        tabmodule=None,
                        write_tables=False)
