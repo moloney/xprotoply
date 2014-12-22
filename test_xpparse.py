@@ -713,10 +713,28 @@ def test_xprotocol():
 
 
 def test_errors():
-    # Characters outside known tokens appear as character tokens
+    # Test error modes
+    assert_raises(ValueError, xpp.XProtocolSymbols, error_mode='foo')
+    # Strict mode -> syntax error, no recovery
     source = '<tag> 10 q "strung"'
-    assert_tokens(source, ['tag', 10, 'q', 'strung'])
-    assert_parsed(source, 'key_value', None)
+    jeb = xpp.XProtocolSymbols(error_mode='strict')
+    jeb.lexer.input(source)
+    assert_equal(jeb.lexer.next().value, 'tag')
+    assert_equal(jeb.lexer.next().value, 10)
+    assert_raises(SyntaxError, jeb.lexer.next)
+    assert_raises(SyntaxError, jeb.parse, source)
+    # String is the default
+    jeb = xpp.XProtocolSymbols()
+    assert_raises(SyntaxError, jeb.parse, source)
+    # Forgiving mode - characters outside known tokens appear as character
+    # tokens
+    hilary = xpp.XProtocolSymbols(error_mode='forgiving')
+    hilary.lexer.input(source)
+    assert_equal([t.value for t in hilary.lexer], ['tag', 10, 'q', 'strung'])
+    # Parse just quietly returns None
+    assert_equal(hilary.parse('<XProtocol>'), None)
+    # EOF syntax error
+    assert_equal(hilary.parse('<'), None)
 
 
 def test_sample_file():

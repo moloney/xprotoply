@@ -72,10 +72,20 @@ class XProtocolSymbols(object):
 
     literals = '{}'
 
-    def __init__(self):
-        """ Build lexer and parser """
+    def __init__(self, error_mode='strict'):
+        """ Build lexer and parser with given `error_mode`
+
+        Parameters
+        ----------
+        error_mode : {'strict', 'forgiving'}
+            'strict' gives SyntaxErrors for a lexing or parsing error.
+            'forgiving' tries to skip past the errors.
+        """
+        if error_mode not in ('strict', 'forgiving'):
+            raise ValueError('Error mode should be "strict" or "forgiving"')
         self.lexer = lex.lex(module=self)
         self.parser = yacc.yacc(debug=False, module=self)
+        self.error_mode = error_mode
 
     # Basic tag
     def t_TAG(self, t):
@@ -126,10 +136,12 @@ class XProtocolSymbols(object):
         return t
 
     def t_error(self, t):
-        print("Illegal character '{0}' at line {1} col {2}".format(
+        msg = ("Illegal character '{0}' at line {1} col {2}".format(
             t.value[0],
             t.lexer.lineno,
             find_column(t.lexer.lexdata, t.lexpos) + 1))
+        if self.error_mode == 'strict':
+            raise SyntaxError(msg)
         t.type = t.value[0]
         t.value = t.value[0]
         t.lexer.skip(1)
@@ -474,12 +486,15 @@ class XProtocolSymbols(object):
 
     def p_error(self, p):
         if not p:
-            print("Syntax error at EOF")
-            return
-        in_data = p.lexer.lexdata
-        print("Syntax error at '{0}', line {1}, col {2}".format(
-            p.value, p.lineno, find_column(in_data, p.lexpos) + 1))
-        print("Line is: '{0}'".format(in_data.splitlines()[p.lineno-1]))
+            msg = "Syntax error at EOF"
+        else:
+            in_data = p.lexer.lexdata
+            msg = ("Syntax error at '{0}', line {1}, col {2}".format(
+                p.value, p.lineno, find_column(in_data, p.lexpos) + 1) +
+                "\nLine is: '{0}'".format(in_data.splitlines()[p.lineno-1]))
+        if self.error_mode == 'strict':
+            SyntaxError(msg)
+        print(msg)
 
     def reset(self):
         """ Reset lexer ready for new read """
