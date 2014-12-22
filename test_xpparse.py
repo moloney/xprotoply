@@ -409,7 +409,20 @@ def test_param_choice():
                               ('Tooltip', 'Defines the composing algorithm '
                                'to be used.'),
                               ('Default', 'Angio'),
-                              ('Limit', ['Angio', 'Spine', 'Adaptive'])]))
+                              ('Limit', ['Angio', 'Spine', 'Adaptive'])],
+                       value=None))
+    # Param choice value is a string
+    assert_parsed('<ParamChoice."InterpolMoCo">  { <Limit> '
+                  '{ "linear" "3D-K-space" "Sinc" "QuinSpline" } '
+                  '"3D-K-space"  }',
+                  'param_choice',
+                  dict(type='param_choice',
+                       name='InterpolMoCo',
+                       attrs=[('Limit', ['linear',
+                                         '3D-K-space',
+                                         'Sinc',
+                                         'QuinSpline'])],
+                       value='3D-K-space'))
 
 
 def test_event():

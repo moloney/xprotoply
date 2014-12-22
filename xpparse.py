@@ -270,11 +270,13 @@ class XProtocolSymbols(object):
                     args=p[3])
 
     def p_param_choice(self, p):
-        """ param_choice : PARAMCHOICE '{' attr_list '}'
+        """ param_choice : PARAMCHOICE '{' attr_list MULTI_STRING '}'
+                         | PARAMCHOICE '{' attr_list empty '}'
         """
         p[0] = dict(type='param_choice',
                     name=p[1],
-                    attrs=p[3])
+                    attrs=p[3],
+                    value=p[4])
 
     def p_param_map(self, p):
         """ param_map : PARAMMAP '{' block_list '}'
