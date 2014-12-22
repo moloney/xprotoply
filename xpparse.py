@@ -109,7 +109,7 @@ class XProtocolSymbols(object):
 
     # Floating literal
     def t_FLOAT(self, t):
-        r'((\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
+        r'[+-]?(?=\d*[.eE])(?=\.?\d)\d*\.?\d*(?:[eE][+-]?\d+)?'
         t.value = float(t.value)
         return t
 

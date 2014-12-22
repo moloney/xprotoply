@@ -214,6 +214,7 @@ def test_scalars():
     assert_tokens('12', [12])
     assert_tokens('-12', [-12])
     assert_tokens('22.3', [22.3])
+    assert_tokens('-22.3', [-22.3])
     assert_tokens('12 "true" 22.3 "false" "string"',
                   [12, True, 22.3, False, 'string'])
     assert_parsed('22.3', 'scalar', 22.3)
