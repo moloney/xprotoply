@@ -328,6 +328,39 @@ def test_param_blocks():
                        value='Calculation'))
 
 
+def test_param_double():
+    # Test param_double construct
+    assert_parsed(
+        '<ParamDouble."FilterWidth">  { <Precision> 1  1.0  }',
+        'param_double',
+        dict(type='param_double',
+             name='FilterWidth',
+             attrs=[('Precision', 1)],
+             value=1.0))
+    assert_parsed(
+        '<ParamDouble."PatchTransX">  { <Precision> 1 }',
+        'param_double',
+        dict(type='param_double',
+             name='PatchTransX',
+             attrs=[('Precision', 1)],
+             value=None))
+    assert_parsed(
+        '<ParamDouble."HRFDelay_s">  { 99999.999  }',
+        'param_double',
+        dict(type='param_double',
+             name='HRFDelay_s',
+             attrs=[],
+             value=float('99999.999')))
+    # Also in block rule
+    assert_parsed(
+        '<ParamDouble."HRFDelay_s">  { 99999.999  }',
+        'block',
+        dict(type='param_double',
+             name='HRFDelay_s',
+             attrs=[],
+             value=float('99999.999')))
+
+
 def test_param_array():
     assert_parsed("""<ParamArray."EstimatedDuration">
                   {

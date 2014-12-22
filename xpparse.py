@@ -46,6 +46,7 @@ class XProtocolSymbols(object):
     # Known tag identifiers with defined types
     typed_tag_ids = {'ParamBool': 'PARAMBOOL',
                      'ParamLong': 'PARAMLONG',
+                     'ParamDouble': 'PARAMDOUBLE',
                      'ParamString': 'PARAMSTRING',
                      'ParamArray': 'PARAMARRAY',
                      'ParamMap': 'PARAMMAP',
@@ -304,6 +305,7 @@ class XProtocolSymbols(object):
     def p_block(self, p):
         """ block : param_bool
                   | param_long
+                  | param_double
                   | param_string
                   | param_array
                   | param_map
@@ -318,6 +320,15 @@ class XProtocolSymbols(object):
                          | PARAMSTRING '{' attr_list MULTI_STRING '}'
         """
         p[0] = dict(type='param_string',
+                    name=p[1],
+                    attrs=p[3],
+                    value=p[4])
+
+    def p_param_double(self, p):
+        """ param_double : PARAMDOUBLE '{' attr_list empty '}'
+                         | PARAMDOUBLE '{' attr_list FLOAT '}'
+        """
+        p[0] = dict(type='param_double',
                     name=p[1],
                     attrs=p[3],
                     value=p[4])
