@@ -397,15 +397,31 @@ def test_param_double():
              value=float('99999.999')))
 
 
+def test_curly_lists():
+    assert_parsed(' { 450 } ',
+                  'curly_lists',
+                  [[450]])
+    assert_parsed(' { } ',
+                  'curly_lists',
+                  [[]])
+    assert_parsed(' { 450 } { } ',
+                  'curly_lists',
+                  [[450], []])
+    assert_parsed(' { "baseline" } { "baseline" } { } { }',
+                  'curly_lists',
+                  [['baseline'], ['baseline'], [], []])
+
+
 def test_param_array():
-    assert_parsed("""<ParamArray."EstimatedDuration">
+    assert_parsed("""
+                  <ParamArray."EstimatedDuration">
                   {
                   <MinSize> 1
                   <MaxSize> 1000000000
                   <Default> <ParamLong."">
                   {
-                 }
-                  { 450 200 }
+                  }
+                  { 450  }
                  }""",
                   'param_array',
                   dict(type='param_array',
@@ -416,7 +432,7 @@ def test_param_array():
                                                name='',
                                                attrs=[],
                                                value=None))],
-                        value=[450, 200]))
+                        value=[[450]]))
     assert_parsed("""
                   <ParamArray."BValue">
                   {
@@ -432,7 +448,36 @@ def test_param_array():
                                                name='',
                                                attrs=[],
                                                value=None))],
-                       value=[]))
+                       value=[[]]))
+    assert_parsed("""
+                  <ParamArray."paradigm">
+                  {
+                  <Default> <ParamChoice."">
+                  {
+                      <Default> "active"
+                      <Limit> { "ignore" "active" "baseline" }
+                  }
+                  { "baseline"  }
+                  { "baseline"  }
+                  { }
+                  { }
+
+                 }""",
+                  'param_array',
+                  dict(type='param_array',
+                       name='paradigm',
+                       attrs=[('Default',
+                               dict(type='param_choice',
+                                    name='',
+                                    attrs=[('Default', 'active'),
+                                           ('Limit', ["ignore",
+                                                      "active",
+                                                      "baseline"])],
+                                    value=None))],
+                       value=[['baseline'],
+                              ['baseline'],
+                              [],
+                              []]))
 
 
 def test_param_map():

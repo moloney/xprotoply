@@ -296,13 +296,24 @@ class XProtocolSymbols(object):
         p[0] = [p[1]] if len(p) == 2 else p[1] + [p[2]]
 
     def p_param_array(self, p):
-        """ param_array : PARAMARRAY '{' attr_list '{' empty '}' '}'
-                        | PARAMARRAY '{' attr_list curly_list '}'
+        """ param_array : PARAMARRAY '{' attr_list curly_lists '}'
         """
         p[0] = dict(type='param_array',
                     name=p[1],
                     attrs=p[3],
-                    value=p[4] if len(p) == 6 else [])
+                    value=p[4])
+
+    def p_curly_lists(self, p):
+        """ curly_lists : curly_lists curly_list
+                        | curly_list
+        """
+        p[0] = [p[1]] if len(p) == 2 else p[1] + [p[2]]
+
+    def p_curly_lists_empty(self, p):
+        """ curly_lists : curly_lists '{' '}'
+                        | '{' '}'
+        """
+        p[0] = [[]] if len(p) == 3 else p[1] + [[]]
 
     def p_block(self, p):
         """ block : param_bool
