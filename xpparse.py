@@ -159,11 +159,15 @@ class XProtocolSymbols(object):
     def p_xprotocol(self, p):
         """ xprotocol : XPROTOCOL '{' xp_hdr block_list param_cards depends '}'
                       | XPROTOCOL '{' xp_hdr block_list eva_cards depends '}'
+                      | XPROTOCOL '{' xp_hdr block_list empty depends '}'
+                      | XPROTOCOL '{' xp_hdr block_list param_cards empty '}'
+                      | XPROTOCOL '{' xp_hdr block_list eva_cards empty '}'
+                      | XPROTOCOL '{' xp_hdr block_list empty empty '}'
         """
         p[0] = dict(type='xprotocol',
                     blocks=p[4],
-                    cards=p[5],
-                    depends=p[6])
+                    cards=[] if p[5] is None else p[5],
+                    depends=[] if p[6] is None else p[6])
         p[0].update(p[3])
 
     def p_xp_hdr(self, p):
@@ -202,11 +206,8 @@ class XProtocolSymbols(object):
     def p_depends(self, p):
         """ depends : depends dependency
                     | dependency
-                    |
         """
-        if len(p) == 1:
-            p[0] = []
-        elif len(p) == 2:
+        if len(p) == 2:
             p[0] = [p[1]]
         else:
             p[0] = p[1] + [p[2]]
@@ -214,14 +215,10 @@ class XProtocolSymbols(object):
     def p_cards(self, p):
         """ param_cards : param_cards param_card_layout
                         | param_card_layout
-                        |
             eva_cards   : eva_cards eva_card_layout
                         | eva_card_layout
-                        |
         """
-        if len(p) == 1:
-            p[0] = []
-        elif len(p) == 2:
+        if len(p) == 2:
             p[0] = [p[1]]
         else:
             p[0] = p[1] + [p[2]]

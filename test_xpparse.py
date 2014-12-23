@@ -748,7 +748,7 @@ def test_depends():
                                "MultiStep.IsInlineCombine"],
                        dll=None,
                        context="ONLINE")])
-    assert_parsed('', 'depends', [])
+    assert_parsed('', 'depends', None)
 
 
 def test_xprotocol():
