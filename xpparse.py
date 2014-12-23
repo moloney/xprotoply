@@ -250,7 +250,7 @@ class XProtocolSymbols(object):
                 | connection event method
                 | connection method event
         """
-        p[0] = p[1:4]
+        p[0] = [p[1], p[2], p[3]]
 
     def p_method(self, p):
         """ method : METHOD '{' string_list '}'
@@ -523,12 +523,12 @@ class XProtocolSymbols(object):
     def p_pos(self, p):
         """pos : POS INTEGER INTEGER
         """
-        p[0] = p[2:]
+        p[0] = [p[2], p[3]]
 
     def p_line(self, p):
         """line : LINE '{' INTEGER INTEGER INTEGER INTEGER '}'
         """
-        p[0] = p[3:7]
+        p[0] = [p[3], p[4], p[5], p[6]]
 
     def p_empty(self, p):
         'empty :'
