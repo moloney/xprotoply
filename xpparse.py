@@ -142,7 +142,9 @@ class XProtocolSymbols(object):
             t.lexer.lineno,
             find_column(t.lexer.lexdata, t.lexpos) + 1))
         if self.error_mode == 'strict':
-            raise SyntaxError(msg)
+            exc = SyntaxError(msg)
+            exc.lineno = t.lexer.lineno
+            raise exc
         t.type = t.value[0]
         t.value = t.value[0]
         t.lexer.skip(1)
@@ -542,7 +544,9 @@ class XProtocolSymbols(object):
                 p.value, p.lineno, find_column(in_data, p.lexpos) + 1) +
                 "\nLine is: '{0}'".format(in_data.splitlines()[p.lineno-1]))
         if self.error_mode == 'strict':
-            SyntaxError(msg)
+            exc = SyntaxError(msg)
+            exc.lineno = p.lineno
+            raise exc
         print(msg)
 
     def reset(self):
