@@ -568,7 +568,7 @@ def strip_twin_quote(in_str):
 
 
 ASCCONV_RE = re.compile(
-    r'(.*)?### ASCCONV BEGIN ###$(.*?)^### ASCCONV END ###',
+    r'(.*?)### ASCCONV BEGIN ###$\n(.*?)\n^### ASCCONV END ###',
     flags=re.M | re.S)
 
 
