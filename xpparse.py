@@ -545,7 +545,10 @@ class XProtocolSymbols(object):
                 "\nLine is: '{0}'".format(in_data.splitlines()[p.lineno-1]))
         if self.error_mode == 'strict':
             exc = SyntaxError(msg)
-            exc.lineno = p.lineno
+            if not p:
+                exc.lineno = -1
+            else:
+                exc.lineno = p.lineno
             raise exc
         print(msg)
 
