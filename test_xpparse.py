@@ -328,18 +328,6 @@ def test_param_blocks():
                        name='Count',
                        attrs=[],
                        value=1))
-    assert_parsed('<Default> <ParamLong.""> { }',
-                  'param_long',
-                  dict(type='param_long',
-                       name='',
-                       attrs=[],
-                       value=None))
-    assert_parsed('<Default> <ParamLong.""> { }',
-                  'block',
-                  dict(type='param_long',
-                       name='',
-                       attrs=[],
-                       value=None))
     assert_parsed('<ParamString."GROUP">  { "Calculation"  }',
                   'param_string',
                   dict(type='param_string',
@@ -793,7 +781,6 @@ def test_depends():
                                "MultiStep.IsInlineCombine"],
                        dll=None,
                        context="ONLINE")])
-    assert_parsed('', 'depends', None)
 
 
 def test_xprotocol():
